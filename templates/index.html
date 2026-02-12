@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beamer to PPTX Converter</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <header class="header">
+        <div class="badge">LaTeX Beamer</div>
+        <h1>Beamer to PPTX</h1>
+        <p class="subtitle">Drop a zip with your .tex and images. Choose editable PPTX, high-res image slides, or narrated video.</p>
+      </header>
+
+      <form id="uploadForm">
+        <div id="dropzone" class="dropzone">
+          <input id="fileInput" type="file" name="file" accept=".zip" />
+          <div class="dropzone-content">
+            <div class="drop-title">Drag & drop your zip</div>
+            <div class="drop-hint">or click to browse</div>
+            <div id="fileName" class="file-name"></div>
+          </div>
+        </div>
+
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="mode" value="editable" checked />
+            <span>Editable PPTX</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="mode" value="images" />
+            <span>High-res images to slides (PPTX only + notes)</span>
+          </label>
+          <label class="option">
+            <input type="radio" name="mode" value="video" />
+            <span>Narrated video (MP4)</span>
+          </label>
+        </div>
+
+        <div class="video-controls">
+          <label for="videoRate">Narration speed</label>
+          <select id="videoRate" name="video_rate">
+            <option value="-20%">Slower (-20%)</option>
+            <option value="-10%">Slightly slower (-10%)</option>
+            <option value="+0%">Normal (0%)</option>
+            <option value="+10%">Slightly faster (+10%)</option>
+            <option value="+20%" selected>Faster (+20%)</option>
+            <option value="+30%">Fast (+30%)</option>
+            <option value="+40%">Very fast (+40%)</option>
+            <option value="+50%">Max fast (+50%)</option>
+          </select>
+        </div>
+
+        <button class="btn" type="submit">Convert</button>
+        <pre id="logBox" class="log-box"></pre>
+      </form>
+
+      <div id="status" class="status"></div>
+      <div class="notes">
+        <div>Zip should contain your main .tex plus any referenced images.</div>
+        <div>If multiple .tex files exist, the app picks a Beamer file or the first match.</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

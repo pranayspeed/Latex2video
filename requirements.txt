@@ -1,0 +1,7 @@
+flask
+python-pptx
+Pillow
+matplotlib
+qrcode
+moviepy
+edge-tts

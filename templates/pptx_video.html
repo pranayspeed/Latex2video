@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PPTX Notes to Video</title>
+  <link rel="stylesheet" href="/static/pptx_video.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <header class="header">
+        <div class="badge">PPTX Narration</div>
+        <h1>PPTX Notes to MP4</h1>
+        <p class="subtitle">Upload a PPTX with notes. The app renders slides and narrates each slide from its notes.</p>
+      </header>
+
+      <form id="uploadForm">
+        <div id="dropzone" class="dropzone">
+          <input id="fileInput" type="file" name="file" accept=".pptx" />
+          <div class="dropzone-content">
+            <div class="drop-title">Drag & drop your PPTX</div>
+            <div class="drop-hint">or click to browse</div>
+            <div id="fileName" class="file-name"></div>
+          </div>
+        </div>
+
+        <div class="video-controls">
+          <label for="videoRate">Narration speed</label>
+          <select id="videoRate" name="video_rate">
+            <option value="-20%">Slower (-20%)</option>
+            <option value="-10%">Slightly slower (-10%)</option>
+            <option value="+0%">Normal (0%)</option>
+            <option value="+10%">Slightly faster (+10%)</option>
+            <option value="+20%" selected>Faster (+20%)</option>
+            <option value="+30%">Fast (+30%)</option>
+            <option value="+40%">Very fast (+40%)</option>
+            <option value="+50%">Max fast (+50%)</option>
+          </select>
+        </div>
+
+        <button class="btn" type="submit">Convert to Video</button>
+        <pre id="logBox" class="log-box"></pre>
+      </form>
+
+      <div id="status" class="status"></div>
+      <div class="notes">
+        <div>Each slide note becomes the narration for that slide.</div>
+        <div>Slides without notes use a short default duration.</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/pptx_video.js"></script>
+</body>
+</html>
