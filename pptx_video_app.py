@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 import threading
+import textwrap
 import uuid
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from werkzeug.utils import secure_filename
 
 from moviepy.editor import AudioFileClip, ImageClip, concatenate_videoclips
+from PIL import Image, ImageDraw, ImageFont
 import edge_tts
 
 APP_ROOT = Path(__file__).resolve().parent
@@ -161,6 +163,143 @@ def _extract_slide_images_from_pptx(pptx_path: Path, out_dir: Path, log_cb=None)
     return images
 
 
+def _load_font(size: int, bold: bool = False) -> ImageFont.ImageFont:
+    candidates = [
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf",
+        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    for fp in candidates:
+        try:
+            return ImageFont.truetype(fp, size=size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def _draw_wrapped_text(
+    draw: ImageDraw.ImageDraw,
+    text: str,
+    font: ImageFont.ImageFont,
+    x: int,
+    y: int,
+    max_width: int,
+    fill: tuple[int, int, int],
+    line_spacing: int,
+) -> int:
+    if not text.strip():
+        return y
+
+    avg_char_px = max(7, int(font.size * 0.55)) if hasattr(font, "size") else 10
+    wrap_width = max(20, max_width // avg_char_px)
+    lines = textwrap.wrap(text, width=wrap_width, break_long_words=False, break_on_hyphens=False) or [text]
+
+    for line in lines:
+        draw.text((x, y), line, font=font, fill=fill)
+        bbox = draw.textbbox((x, y), line, font=font)
+        line_h = max(18, bbox[3] - bbox[1])
+        y += line_h + line_spacing
+    return y
+
+
+def _extract_slide_text(slide, idx: int) -> tuple[str, list[str]]:
+    title = ""
+    try:
+        if slide.shapes.title and getattr(slide.shapes.title, "has_text_frame", False):
+            title = _clean_note_text(slide.shapes.title.text_frame.text or "")
+    except Exception:
+        title = ""
+
+    body_chunks: list[str] = []
+    for shape in slide.shapes:
+        if not getattr(shape, "has_text_frame", False):
+            continue
+        txt = _clean_note_text(shape.text_frame.text or "")
+        if not txt:
+            continue
+        if txt.lower() in {"click to add text", "click to add title"}:
+            continue
+        if title and txt == title:
+            continue
+        body_chunks.append(txt)
+
+    if not title:
+        title = f"Slide {idx}"
+    return title, body_chunks
+
+
+def _render_text_slides_from_pptx(pptx_path: Path, out_dir: Path, log_cb=None) -> list[Path]:
+    prs = Presentation(str(pptx_path))
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    width_ratio = float(prs.slide_width) if prs.slide_width else 16.0
+    height_ratio = float(prs.slide_height) if prs.slide_height else 9.0
+    out_w = 1280
+    out_h = max(720, int(out_w * (height_ratio / width_ratio)))
+
+    title_font = _load_font(54, bold=True)
+    body_font = _load_font(34, bold=False)
+    images: list[Path] = []
+
+    for idx, slide in enumerate(prs.slides, start=1):
+        title, body_chunks = _extract_slide_text(slide, idx)
+        img = Image.new("RGB", (out_w, out_h), color=(248, 250, 252))
+        draw = ImageDraw.Draw(img)
+
+        pad_x = int(out_w * 0.08)
+        max_w = int(out_w * 0.84)
+        y = int(out_h * 0.10)
+
+        y = _draw_wrapped_text(
+            draw=draw,
+            text=title,
+            font=title_font,
+            x=pad_x,
+            y=y,
+            max_width=max_w,
+            fill=(15, 23, 42),
+            line_spacing=8,
+        )
+        y += 20
+
+        if body_chunks:
+            for chunk in body_chunks:
+                y = _draw_wrapped_text(
+                    draw=draw,
+                    text=chunk,
+                    font=body_font,
+                    x=pad_x,
+                    y=y,
+                    max_width=max_w,
+                    fill=(30, 41, 59),
+                    line_spacing=6,
+                )
+                y += 16
+                if y > int(out_h * 0.88):
+                    break
+        else:
+            _draw_wrapped_text(
+                draw=draw,
+                text="(No slide text found in PPTX content)",
+                font=body_font,
+                x=pad_x,
+                y=y,
+                max_width=max_w,
+                fill=(71, 85, 105),
+                line_spacing=6,
+            )
+
+        out_path = out_dir / f"slide-{idx:03d}.png"
+        img.save(out_path, format="PNG")
+        images.append(out_path)
+
+    if log_cb:
+        log_cb(f"Rendered {len(images)} text-based slide images from PPTX")
+    return images
+
+
 async def _tts_to_file(text: str, output_path: Path, voice: str, rate: str) -> None:
     communicator = edge_tts.Communicate(text, voice=voice, rate=rate)
     await communicator.save(str(output_path))
@@ -240,7 +379,11 @@ def _process_job(job_id: str, filename: str, payload: bytes, video_rate: str) ->
         except VideoBuildError as e:
             if "Required tool not found" in str(e):
                 log("LibreOffice not found, using direct PPTX image extraction fallback.")
-                images = _extract_slide_images_from_pptx(pptx_path, tmp_dir / "slides_from_pptx", log_cb=log)
+                try:
+                    images = _extract_slide_images_from_pptx(pptx_path, tmp_dir / "slides_from_pptx", log_cb=log)
+                except VideoBuildError:
+                    log("No embedded slide pictures found. Falling back to text-rendered slide images.")
+                    images = _render_text_slides_from_pptx(pptx_path, tmp_dir / "slides_text_fallback", log_cb=log)
             else:
                 raise
 
