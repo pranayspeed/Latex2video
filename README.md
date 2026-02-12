@@ -69,6 +69,7 @@ Use this when you already have a `.pptx` and want a narrated video from slide no
 ## Requirements Notes
 
 - Beamer ZIP app expects a `.zip` containing the main `.tex` and referenced assets.
+- If Beamer conversion script location varies, set `BEAMER_TO_PPTX_SCRIPT=/full/path/to/beamer_to_pptx.py`.
 - If multiple `.tex` files exist, the app prefers a Beamer class file.
 - Beamer image/video paths need `latexmk` and `pdftoppm`.
 - Video generation needs `ffmpeg`.

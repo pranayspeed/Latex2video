@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 import shutil
 import tempfile
@@ -19,8 +20,6 @@ from pptx.util import Emu
 from PIL import Image
 
 APP_ROOT = Path(__file__).resolve().parent
-REPO_ROOT = APP_ROOT.parent
-BEAMER_SCRIPT = REPO_ROOT / "Presentation" / "beamer_to_pptx.py"
 VIDEO_SCRIPT = APP_ROOT / "generate_video.py"
 
 ALLOWED_EXT = {".zip"}
@@ -33,6 +32,36 @@ BEAMER_RE = re.compile(r"\\documentclass(\[[^\]]*\])?\{beamer\}")
 ALLOWED_VIDEO_RATES = {"-20%", "-10%", "+0%", "+10%", "+20%", "+30%", "+40%", "+50%"}
 JOBS: dict[str, dict] = {}
 JOBS_LOCK = threading.Lock()
+
+
+def _resolve_beamer_script() -> Path:
+    # 1) Explicit override for local setups.
+    env_path = os.environ.get("BEAMER_TO_PPTX_SCRIPT")
+    if env_path:
+        p = Path(env_path).expanduser().resolve()
+        if p.exists():
+            return p
+
+    # 2) Common locations relative to this repo.
+    candidates = [
+        APP_ROOT / "Presentation" / "beamer_to_pptx.py",
+        APP_ROOT.parent / "Presentation" / "beamer_to_pptx.py",
+    ]
+
+    # 3) Sibling repositories containing a Presentation folder.
+    for sibling in APP_ROOT.parent.iterdir():
+        if sibling.is_dir():
+            candidates.append(sibling / "Presentation" / "beamer_to_pptx.py")
+
+    for p in candidates:
+        if p.exists():
+            return p
+
+    searched = "\n - ".join(str(p) for p in candidates)
+    raise FileNotFoundError(
+        "Missing beamer_to_pptx.py. Set BEAMER_TO_PPTX_SCRIPT or place the script in one of:\n"
+        f" - {searched}"
+    )
 
 
 def _append_log(job_id: str, message: str) -> None:
@@ -106,12 +135,11 @@ def _run_cmd(cmd: list[str], cwd: Path, log_cb=None) -> None:
 
 
 def _run_beamer_to_pptx(tex_path: Path, out_pptx: Path, log_cb=None) -> None:
-    if not BEAMER_SCRIPT.exists():
-        raise FileNotFoundError(f"Missing script: {BEAMER_SCRIPT}")
+    beamer_script = _resolve_beamer_script()
 
     cmd = [
         sys.executable,
-        str(BEAMER_SCRIPT),
+        str(beamer_script),
         str(tex_path),
         "-o",
         str(out_pptx),
