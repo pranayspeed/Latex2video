@@ -1,5 +1,11 @@
 # LaTeX2Video Flask Apps
 
+## What Is Beamer?
+
+Beamer is a LaTeX document class used to create presentation slides (`.tex` files) instead of PowerPoint files. It is popular in academic and technical work because slides are text-based, version-control friendly, and easy to automate.
+
+This project helps bridge Beamer workflows with presentation/video outputs by converting Beamer sources into formats that are easier to share, edit, and narrate.
+
 This repository includes **two Flask apps**:
 
 1. `app.py` (port `8000`): Upload a Beamer `.zip` and convert it to:
