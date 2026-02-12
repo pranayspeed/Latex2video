@@ -9,6 +9,20 @@ This repository includes **two Flask apps**:
 
 2. `pptx_video_app.py` (port `8001`): Upload a `.pptx`, read speaker notes, and generate a narrated `.mp4`.
 
+## Screenshots and Flow
+
+### App 1 (`app.py`) - Beamer ZIP Converter
+
+![Beamer ZIP Converter screenshot-style preview](docs/images/app1-beamer-converter.svg)
+
+### App 2 (`pptx_video_app.py`) - PPTX Notes to Video
+
+![PPTX Notes to Video screenshot-style preview](docs/images/app2-pptx-video.svg)
+
+### Combined Architecture / Flow
+
+![Flow diagram for both Flask apps](docs/images/apps-flow.svg)
+
 ## Setup
 
 ```bash

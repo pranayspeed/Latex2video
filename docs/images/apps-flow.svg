@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="620" viewBox="0 0 1280 620" role="img" aria-label="Flow diagram for both Flask apps">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="620" fill="#f8fafc"/>
+
+  <text x="60" y="70" font-family="Verdana, sans-serif" font-size="30" font-weight="700" fill="#0f172a">Two Flask Apps Overview</text>
+
+  <rect x="60" y="130" width="560" height="420" rx="18" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="90" y="170" font-family="Verdana, sans-serif" font-size="22" font-weight="700" fill="#1d4ed8">App 1: app.py (localhost:8000)</text>
+
+  <rect x="90" y="205" width="220" height="58" rx="10" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="111" y="240" font-family="Verdana, sans-serif" font-size="17" fill="#1e3a8a">Upload Beamer .zip</text>
+
+  <rect x="360" y="205" width="220" height="58" rx="10" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="390" y="240" font-family="Verdana, sans-serif" font-size="17" fill="#1e3a8a">Convert modes</text>
+
+  <line x1="311" y1="234" x2="360" y2="234" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="90" y="305" width="490" height="185" rx="12" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="116" y="340" font-family="Verdana, sans-serif" font-size="17" fill="#1e3a8a">Outputs:</text>
+  <text x="132" y="372" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">1) Editable PPTX</text>
+  <text x="132" y="402" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">2) Image-based PPTX + narration notes</text>
+  <text x="132" y="432" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">3) Narrated MP4 from \narration{...}</text>
+
+  <line x1="470" y1="263" x2="470" y2="305" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="660" y="130" width="560" height="420" rx="18" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="690" y="170" font-family="Verdana, sans-serif" font-size="22" font-weight="700" fill="#166534">App 2: pptx_video_app.py (localhost:8001)</text>
+
+  <rect x="690" y="205" width="220" height="58" rx="10" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="736" y="240" font-family="Verdana, sans-serif" font-size="17" fill="#14532d">Upload .pptx</text>
+
+  <rect x="960" y="205" width="220" height="58" rx="10" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="990" y="240" font-family="Verdana, sans-serif" font-size="17" fill="#14532d">Extract notes</text>
+
+  <line x1="911" y1="234" x2="960" y2="234" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <rect x="690" y="305" width="490" height="185" rx="12" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="716" y="340" font-family="Verdana, sans-serif" font-size="17" fill="#166534">Output:</text>
+  <text x="732" y="372" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">Narrated MP4 video from slide speaker notes</text>
+  <text x="732" y="402" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">Fallback: embedded slide images if LibreOffice is unavailable</text>
+  <text x="732" y="432" font-family="Verdana, sans-serif" font-size="16" fill="#0f172a">Uses TTS + ffmpeg for final render</text>
+
+  <line x1="1070" y1="263" x2="1070" y2="305" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)"/>
+</svg>
