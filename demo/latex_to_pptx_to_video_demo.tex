@@ -1,0 +1,57 @@
+\documentclass{beamer}
+\usetheme{CambridgeUS}
+\usepackage{graphicx}
+
+% Keeps source compatible with normal LaTeX compile while enabling narration extraction in this project.
+\newcommand{\narration}[1]{}
+
+\title{LaTeX to PPTX to Video Demo}
+\author{Demo Research Group}
+\institute{School of Engineering}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \narration{This demo shows the full two-app workflow. First we convert a Beamer zip into a PowerPoint file, then we turn that PowerPoint with notes into a narrated video.}
+\end{frame}
+
+\begin{frame}{Research Problem}
+  \begin{itemize}
+    \item Students need shareable and editable versions of Beamer slides.
+    \item Teams often want narrated videos for asynchronous lectures.
+    \item One source should support both outputs.
+  \end{itemize}
+  \narration{Our problem is practical. We start with Beamer for writing quality technical slides, but still need editable decks and narrated videos for distribution.}
+\end{frame}
+
+\begin{frame}{Workflow}
+  \begin{columns}[T]
+    \begin{column}{0.54\textwidth}
+      \begin{enumerate}
+        \item Upload this Beamer project zip to \texttt{app.py}.
+        \item Choose \textbf{High-res images to slides (PPTX only + notes)}.
+        \item Download the generated PPTX.
+        \item Upload that PPTX to \texttt{pptx\_video\_app.py}.
+        \item Download the narrated MP4.
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{assets/academic_workflow.png}
+    \end{column}
+  \end{columns}
+  \narration{For the full pipeline, use image based PowerPoint mode in the first app so narration text is copied into PowerPoint speaker notes. Then the second app reads these notes to synthesize speech.}
+\end{frame}
+
+\begin{frame}{Expected Output}
+  \begin{itemize}
+    \item A PPTX deck suitable for sharing and light edits.
+    \item A narrated MP4 where each slide uses this slide's narration text.
+    \item Reproducible content from one Beamer source file.
+  \end{itemize}
+  \narration{The expected result is consistent outputs across formats: slides for presentation and a narrated video for remote learning, both generated from the same LaTeX source.}
+\end{frame}
+
+\end{document}

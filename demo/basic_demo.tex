@@ -1,0 +1,57 @@
+\documentclass{beamer}
+\usetheme{Madrid}
+\usepackage{graphicx}
+
+% Keep narration commands in source while still compiling normally.
+\newcommand{\narration}[1]{}
+
+\title{Demo Academic Presentation}
+\author{Sample Author}
+\institute{Department of Computer Science}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \narration{Welcome to this short demo presentation. In this talk, we cover a simple academic workflow with a problem statement, a method, and final results.}
+\end{frame}
+
+\begin{frame}{Introduction and Motivation}
+  \begin{itemize}
+    \item Many research talks start from a practical problem.
+    \item Clear structure helps the audience follow quickly.
+    \item We want outputs for slides, editable decks, and narrated videos.
+  \end{itemize}
+  \narration{The motivation is to communicate research clearly. We start with the problem context and highlight why a structured presentation is useful for students and researchers.}
+\end{frame}
+
+\begin{frame}{Methodology}
+  \begin{block}{Pipeline}
+    Collect data $\rightarrow$ preprocess $\rightarrow$ train model $\rightarrow$ evaluate.
+  \end{block}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{itemize}
+        \item Baseline: linear model.
+        \item Proposed: regularized model with tuned hyperparameters.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth]{assets/research_chart.png}
+    \end{column}
+  \end{columns}
+  \narration{Our method follows a common academic pipeline. We compare a baseline model against a regularized approach and evaluate both under the same protocol.}
+\end{frame}
+
+\begin{frame}{Results and Conclusion}
+  \begin{itemize}
+    \item Proposed method improves accuracy by about 8\%.
+    \item Training time remains practical for classroom-scale datasets.
+    \item Future work: robustness tests and larger benchmarks.
+  \end{itemize}
+  \narration{In summary, the proposed method improves performance with manageable cost. The next steps are broader benchmarks and stronger robustness analysis. Thank you.}
+\end{frame}
+
+\end{document}

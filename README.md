@@ -57,6 +57,15 @@ Open `http://localhost:8001`
 
 Use this when you already have a `.pptx` and want a narrated video from slide notes.
 
+## Demo Files
+
+- `demo/basic_demo.tex`: Basic 4-slide academic Beamer demo with narration tags and an image.
+- `demo/basic_demo_upload.zip`: Ready-to-upload zip for `app.py`.
+- `demo/latex_to_pptx_to_video_demo.tex`: Demo for the full two-app pipeline (LaTeX -> PPTX -> narrated MP4) with an image.
+- `demo/latex_to_pptx_to_video_demo_upload.zip`: Ready-to-upload zip for `app.py`.
+- `demo/assets/`: Image assets used by the demo slides.
+- `demo/README.md`: Step-by-step instructions for running the demos.
+
 ## Requirements Notes
 
 - Beamer ZIP app expects a `.zip` containing the main `.tex` and referenced assets.
